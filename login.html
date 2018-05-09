@@ -1,0 +1,248 @@
+<html>
+		<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>SPA</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link href="static/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+		<link href="static/css/login.css" rel="stylesheet" />
+		<script src="static/js/jquery-1.12.3.min.js"></script>
+		<script src="static/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+		<script>
+			var accountList;
+			
+			$(document).ready(function() {
+				$.ajax({
+					type : "POST",
+					url : "getAccountList",
+					async : false,
+					dataType : "json",
+					success : function(data) {
+						accountList = data.accountList;
+						//accountList = data.userList;
+					}
+				});
+
+				if (accountList.length > 0) {
+					console.log(accountList);
+					$("#input").hide();
+					$("#listgroup").hide();
+					$("#submit").hide();
+					$("#upload").hide();
+
+					initSelect(accountList);
+				} else {
+					console.log(accountList);
+					$("#dropdown").hide();
+					//$("#login").attr('disabled',true);
+					$("#login").hide();
+				}
+			});
+		
+			function initSelect(accountList) {
+				var onSeatNo = 0;
+				$("#userName").empty();
+				for ( var i in accountList) {
+					if (!accountList[i].onSeat) {
+						$("#userName").append(
+								'<option value="' + accountList[i].name + '">'
+										+ accountList[i].name + '</option>');
+					}else{
+						onSeatNo++;
+					}
+				}
+
+				if (onSeatNo == accountList.length){
+					alert("No available user");
+				}
+			}
+		</script>
+		<style>
+		
+		</style>
+		</head>
+		<body>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+						<div class="panel panel-login">
+							<div class="panel-heading">
+								<div class="row">
+									<div class="col-md-6">
+										Login
+									</div>
+								</div>
+								<hr>
+							</div>
+							<div class="panel-body" id="config">
+								<div class="row">
+									<div class="col-lg-12">
+										<form role="form" action="login" method="POST">
+											<div class="form-group" id="input">
+												<div class="input-group">
+													<input type="text" class="form-control" id="addUser" placeholder="Add User">
+														<span class="input-group-btn">
+															<button class="btn btn-info" type="button" id="adduser">
+																		+
+															</button>
+														</span>
+												</div>
+											</div>
+											<div class="form-group" id="listgroup">
+												<div class="list-group">
+													<ul class="list-group">
+													</ul>											
+												</div>
+											</div>			
+											<div class="form-group">
+												<div class="row">
+													<div class="col-sm-6 col-sm-offset-3">
+														<button class="btn btn-default" type="button" id="submit">
+															Confirm
+														</button>
+														<button class="btn btn-default" type="button" id="upload">
+															Upload
+														</button>
+													</div>
+												</div>
+											</div>	
+		
+											<div class="form-group" id="dropdown">
+												<label for="userName" class="col-sm-2 control-label">User</label>
+												<div class="col-sm-10">
+													<select class="form-control" id="userName" name="userName">
+													</select>
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-sm-offset-2 col-sm-10">
+													<input id="login" type="submit" class="btn btn-primary"
+														value="Logon" />
+												</div>
+											</div>								
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</body>
+	<script>
+		var accountListNew = [];
+		$("#adduser").on('click',function () {
+			//Get input text
+			var inText = $('#addUser').val();
+			if(inText.length <= 0) {
+				return;
+			}
+			var checkName = 0;
+			for(var i = 0; i < accountListNew.length; i++) {
+				if(inText == accountListNew[i].name) {
+					checkName++;
+				}
+			}
+			var badge;
+			if(checkName>0){
+				badge = inText.substr(0,1) + checkName;
+			} else {
+				badge = inText.substr(0,1);
+			}
+		
+			var role;
+			if (accountListNew.length == 0){
+				//Set first user as admin by default
+				role = "admin";
+			} else{
+				role = "user";
+			}
+
+			$(".list-group ul").append('<li class="list-group-item"><span>' + inText + '(' + role + ')'
+			 + '</span><span class="badge">'+ badge 
+			 + '</span></li>');
+			
+			 accountListNew.push({name:inText,onSeat:false,point:null,role:role});
+			console.log(accountListNew);
+			//Set null
+			$('#addUser').val('');
+		});	
+
+		$("#listgroup").on('click',function(e) {
+			e.preventDefault();
+
+			var text = e.target.textContent;
+			var removename;
+			//Find removed name
+			for (i in text){
+				if (text[i] == "("){
+					removename = text.substr(0,i);
+					break;
+				}
+			}
+			
+			for (i in accountListNew) {
+				if (accountListNew[i].name == removename){
+					if (accountListNew[i].role == "admin"){
+					alert("Admin can't be removed");
+					} else {
+						accountListNew.splice(i,1);
+						e.target.style.visibility = "hidden";
+					}
+					break;
+				}
+				
+			}
+		});
+
+		$("#submit").on('click',function() {
+			if(accountListNew.length == 0){
+				alert("Please add users");
+			} else {
+				console.log("click submit");
+
+				var data = JSON.stringify(accountListNew);
+				$.ajax({
+					type : "POST",
+					url : "appendAccountList",
+					data: data,
+					dataType : "json",
+					contentType: "application/json",
+					success : function(data) {
+						console.log("post user list success");
+
+					}
+				});
+
+				$("#input").hide();
+				$("#listgroup").hide();
+				$("#submit").hide();
+				$("#upload").hide();
+
+				$("#dropdown").show();
+				//$("#login").attr('disabled',false);
+				$("#login").show();
+				initSelect(accountListNew);
+			}
+		});
+		
+		$("#upload").on('click',function(){
+			var uploadAccountList = [];
+			$.ajax({
+				type : "POST",
+				url : "uploadAccountList",
+				async : false,
+				dataType : "json",
+				success : function(data){
+					uploadAccountList = data.accountList;
+				}
+			});
+
+			for(i in uploadAccountList){
+				accountListNew.push({name:uploadAccountList[i].name,onSeat:uploadAccountList[i].onSeat,point:uploadAccountList[i].point,role:uploadAccountList[i].role});
+				$(".list-group ul").append('<li class="list-group-item"><span>' + uploadAccountList[i].name + '(' + uploadAccountList[i].role + ')'
+			 	+ '</span><span class="badge">'+ uploadAccountList[i].name.substr(0,1) 
+			 	+ '</span></li>');
+			}
+		})
+	</script>
+</html>

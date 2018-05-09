@@ -1,0 +1,29 @@
+{
+"accountList" : [
+{
+	"name" : "admin",
+	"onSeat" : false,
+	"point" : null
+},
+{
+	"name" : "xingsheng",
+	"onSeat" : false,
+	"point" : null
+},
+{
+	"name" : "lee",
+	"onSeat" : false,
+	"point" : null
+},
+{
+	"name" : "lingling",
+	"onSeat" : false,
+	"point" : null
+},
+{
+	"name" : "zarch",
+	"onSeat" : false,
+	"point" : null
+}
+]
+}
