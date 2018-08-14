@@ -18,16 +18,16 @@ h1 {display : inline}
 div.header
 {
 height: 5%;
-padding:0.5em;
+padding: 0.5em;
 /* color:white;
 background-color:gray; */
 margin-top: 10%
 clear:left;
 }
 
-body { 
- 	height: 600px; 
- } 
+body {
+	height: 600px;
+}
 /* body{ margin:0px; height:100%; } */
 .container {
 	display: flex;
@@ -62,7 +62,7 @@ body {
 	display: block;
 	/* float: right; */
 	text-align: center;
-	margin-right: 2px; 
+	margin-right: 2px;
 }
 
 .bottom {
@@ -113,7 +113,7 @@ margin-top: 40px;
 	/* margin-top: 40px; */
 	text-align: center;
 	vertical-align: middle;
-	font-size: 15px;		
+	font-size: 15px;
 	text-align: center;
 }
 
@@ -122,7 +122,7 @@ margin-top: 40px;
 	text-align: center;
 	vertical-align: middle;
 	font-size: 20px;
-	font-weight: bold;	
+	font-weight: bold;
 	text-align: center;
 	color: red;
 }
@@ -132,85 +132,104 @@ margin-top: 40px;
 	text-align: center;
 	vertical-align: middle;
 	font-size: 20px;
-	font-weight: bold;	
+	font-weight: bold;
 	text-align: center;
 	color: orange;
 }
 </style>
 </head>
 <body>
-<div class="container-fluid">
-	<div class="container ">
-		<div class="header">
-			<img alt="SAP" src="static/img/SAPlogo.png"	style="width: 128px; margin-bottom: -20px; float: left">
-			<h1>Scrum Planning Application</h1>
-			<hr>
+    <div class="container-fluid">
+        <div class="container ">
+        	<div class="header">
+        		<img alt="SAP" src="static/img/SAPlogo.png"
+                	style="width: 128px; margin-bottom: -20px; float: left">
+    		<h1>Scrum Planning Application</h1>
+    		<hr>
 		</div>
-	</div>
-	<div class="container top">
-		<div id="left">
-			<div class="list-group">
-				<ul class="list-group">
-					<li class="list-group-item active">Name List</li>
-					<!--<li class="list-group-item"><span>iniData[i].name:</span><span
+		<div class="container top">
+			<div id="left">
+				<div class="list-group">
+					<ul class="list-group">
+						<li class="list-group-item active">Name List</li>
+						<!--<li class="list-group-item"><span>iniData[i].name:</span><span
 								class="personalData">iniData[i].data</span></li>-->
-				</ul>
+					</ul>
+				</div>
+			</div>
+			<div id="main"></div>
+			<div id="right">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title" id="result-title">Result</h3>
+					</div>
+					<div class="panel-body">
+						<div class="Max">
+							<span>Max: </span><span id=pointmax></span>
+						</div>
+						<div class="Min">
+							<span>Min: </span><span id=pointmin></span>
+						</div>
+						<div class="Variance">
+							<span id=pointvar></span>
+						</div>
+						<div class="Average">
+							<span>Average: </span><span id="pointAvg"></span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
-		<div id="main"></div>
-		<div id="right">
-			<div class="panel panel-default">
+		<div class="container bottom">
+			<div class="panel panel-default bottom">
 				<div class="panel-heading">
-					<h3 class="panel-title" id="result-title">Result</h3>
+					<h3 class="panel-title">Estimate</h3>
 				</div>
 				<div class="panel-body">
-					<div class="Max">
-						<span>Max: </span><span id=pointmax></span>
+					<div class="btn-toolbar" role="toolbar" aria-label="...">
+						<button class="btn btn-primary pointBtn" value="1">1</button>
+						<button class="btn btn-primary pointBtn" value="2">2</button>
+						<button class="btn btn-primary pointBtn" value="3">3</button>
+						<button class="btn btn-primary pointBtn" value="4">4</button>
+						<button class="btn btn-primary pointBtn" value="5">5</button>
+						<button class="btn btn-primary pointBtn" value="6">6</button>
+						<button class="btn btn-primary pointBtn" value="7">7</button>
+						<button class="btn btn-primary pointBtn" value="8">8</button>
 					</div>
-					<div class="Min">
-						<span>Min: </span><span id=pointmin></span>
-					</div>
-					<div class="Variance">
-						<span id=pointvar></span>
-					</div>
-					<div class="Average">
-						<span>Average: </span><span id="pointAvg"></span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container bottom">
-		<div class="panel panel-default bottom">
-			<div class="panel-heading">
-				<h3 class="panel-title">Estimate</h3>
-			</div>
-			<div class="panel-body">
-				<div class="btn-toolbar" role="toolbar" aria-label="...">
-					<button class="btn btn-primary pointBtn" value="1">1</button>
-					<button class="btn btn-primary pointBtn" value="2">2</button>
-					<button class="btn btn-primary pointBtn" value="3">3</button>
-					<button class="btn btn-primary pointBtn" value="4">4</button>
-					<button class="btn btn-primary pointBtn" value="5">5</button>
-					<button class="btn btn-primary pointBtn" value="6">6</button>
-					<button class="btn btn-primary pointBtn" value="7">7</button>
-					<button class="btn btn-primary pointBtn" value="8">8</button>
-				</div>
-				<div class="textInput">
-					<div class="up">					
-						<span id="unit">Estimate:</span> <input id="point" type="number">
-					</div>
-					<div class="action">											
-						<button class="btn btn-primary btn-sm" id="submit" value=""
-							disabled="disabled">Submit</button>
-						<button class="btn btn-primary btn-sm" id="newRound" value="">New Round</button>
-						<button class="btn btn-primary btn-sm" id="roundOver" value=""
-							disabled="disabled">Show Result</button>
+					<div class="textInput">
+						<div class="up">
+							<span id="unit">Estimate:</span> <input id="point" type="number">
+						</div>
+						<div class="action">
+							<button class="btn btn-primary btn-sm" id="submit" value=""
+								disabled="disabled">Submit</button>
+							<button class="btn btn-primary btn-sm" id="newRound" value="">New
+								Round</button>
+							<button class="btn btn-primary btn-sm" id="roundOver" value=""
+								disabled="disabled">Show Result</button>
+							<button class="btn btn-primary btn-sm" id="logout" value="">Log Out</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
 </body>
+
+<script>
+	$("#terminate").on('click', function(){
+		if (confirm('Terminate?')) {
+			//post
+			$.ajax({
+					type : "POST",
+					url : "terminate",
+					success : function(data) {
+						console.log("terminate user list success");
+						
+						window.location.replace('/login');
+					}
+				});
+		} 
+	})
+</script> 
 </html>

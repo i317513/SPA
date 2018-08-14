@@ -22,11 +22,11 @@ $(document).ready(function() {
 		$("#point").val(point);
 	});
 
-	$("#newRound").click(function() {
+	$(BTN_NEXT_ROUND).click(function() {
 		socket.emit("nextRound");
 	})
 
-	$("#submit").click(function() {
+	$(BTN_SUBMIT).click(function() {
 		var point = $("#point").val();
 		if (point == "" || isNaN(point)) {
 			alert("Please input a number.");
@@ -38,8 +38,20 @@ $(document).ready(function() {
 		});
 	});
 	
-	$("#roundOver").click(function() {
+	$(BTN_ROUND_OVER).click(function() {
 		socket.emit("roundOver");
+	});
+	
+	$("#logout").click(function() {		
+		$.ajax({
+			type : "POST",
+			url : "logout",
+			data : { userName:user.name },
+			async : false,
+			dataType : "json",
+			success : function(data) {					
+			}
+		});
 	});
 });
 var user;
@@ -62,29 +74,30 @@ var STATE_VOTING = 'Voting';
 var STATE_VOTE_READY = 'Ready';
 var STATE_ROUND_OVER = 'Round_over';
 
-var BTN_START_ROUND = '#newRound';
+var BTN_NEXT_ROUND = '#newRound';
 var BTN_SUBMIT	= '#submit';
 var BTN_ROUND_OVER = '#roundOver';
+var BTN_LOGOUT = '#logout'
+var BTN_TERMINATE = '#terminate'; //0521
 
 var myChart;
 var option = {};
 function initECharts() {
-	myChart = echarts.init(document.getElementById('main'));
-	// myChart = echarts.init($("#main"));
-	option = {
-		title : {
+	myChart = echarts.init(document.getElementById('main'));	
+	option = {			
+			title : {
 			text : 'Pie statistics',
 			left : 'center',
 			top : 0,
 			textStyle : {
-				color : '#888'
+				color : '#337AB7'
 			}
 		},
 		series : [ {
 			name : 'Data source',
 			type : 'pie',
 			radius : '80%',
-			data : []
+			data : []			
 		} ]
 	}
 	updateEChartResult();
@@ -98,7 +111,8 @@ function updateEChartResult(userList, result) {
 		||	result === null || !result.show ) {
 		data2show.push({
 			name : "not ready",
-			value : 0
+			value : 0,
+			itemStyle: {normal:{color:'#337AB7', opacity:0.8}}
 		});
 		option.series[0].data = data2show;
 		myChart.setOption(option);
@@ -131,18 +145,12 @@ function getCurrentServerData() {
 		success : function(data) {
 			userList = data.userList;
 			result = data.result;		
-			unit = data.unit;
-
-			/*if (accountNumber == userList.length) {
-				$("#newRound").removeAttr("disabled");
-			}*/
+			unit = data.unit;			
 		}
 	});
 }
 
-function initSeatList() {
-	// <li class="list-group-item" id="user_ling"><span id="userName_ling" >ling:</span><span
-	// id="userPoint_ling" class="personalData">3</span></li>
+function initSeatList() {	
 	for (var i = 0; i < accountNumber; i++) {
 		$(".list-group ul").append(
 				'<li class="list-group-item"><span id="userName_' +  accountList[i].name + '" >' + accountList[i].name
@@ -203,20 +211,21 @@ function updateUI(userList, result) {
 	// 4. update ui elements	
 	$("#unit").html("Estimate:("+ unit + ")");
 	
-	//update button display
+	//update button display	
+	$(BTN_SUBMIT).show();	
 	if (user.role == ROLE_ADMIN) {
-		//display all buttons
-		$(BTN_START_ROUND).show();
+        //Admin user,hide logout	
+		$(BTN_NEXT_ROUND).show();
 		$(BTN_ROUND_OVER).show();
-		
-		$(BTN_SUBMIT).show();	
+        $(BTN_TERMINATE).show(); //2018-5-21
+		$(BTN_LOGOUT).hide();	//2018-6-25
 	}
 	else{
 		//normal user, hide the "new round" and "show result" 
-		$(BTN_START_ROUND).hide();
+		$(BTN_NEXT_ROUND).hide();
 		$(BTN_ROUND_OVER).hide();
-		
-		$(BTN_SUBMIT).show();		
+        $(BTN_TERMINATE).hide(); //2018-5-21
+		$(BTN_LOGOUT).show();
 	}
 }
 
@@ -278,7 +287,7 @@ socket.on("roundOver", function(e) {
 	$(BTN_SUBMIT).attr("disabled", "disabled");
 	$(BTN_ROUND_OVER).attr("disabled", "disabled");
 	
-	$(BTN_START_ROUND).removeAttr("disabled");	
+	$(BTN_NEXT_ROUND).removeAttr("disabled");	
 });
 socket.on("nextRound", function(e) {
 	var data = JSON.parse(e);
@@ -291,13 +300,33 @@ socket.on("nextRound", function(e) {
 	$(BTN_SUBMIT).removeAttr("disabled");	
 	$(BTN_ROUND_OVER).removeAttr("disabled");
 	
-	$(BTN_START_ROUND).attr("disabled", "disabled");
+	$(BTN_NEXT_ROUND).attr("disabled", "disabled");
 });
+
+socket.on("logout", function(e) {
+	var data = JSON.parse(e);
+		
+	if (user.name != data.user.name) {	
+		updateUI(data.userList,data.result);
+	}
+	else{
+		window.location.replace('/login');
+	}		
+});
+
 socket.on("full", function() {
-	$(BTN_START_ROUND).removeAttr("disabled");
+	$(BTN_NEXT_ROUND).removeAttr("disabled");
 });
+
 socket.on('disconnect', function(e) {
 	console.log("Connection closed.");
+});
+
+socket.on("terminate", function(e){
+	var user = JSON.parse(e).user;
+
+	alert("Admin " + user + " terminates current meeting");
+	window.location.replace('/login');	
 });
 
 function disconnect() {

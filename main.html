@@ -18,16 +18,16 @@ h1 {display : inline}
 div.header
 {
 height: 5%;
-padding:0.5em;
+padding: 0.5em;
 /* color:white;
 background-color:gray; */
 margin-top: 10%
 clear:left;
 }
 
-body { 
- 	height: 600px; 
- } 
+body {
+	height: 600px;
+}
 /* body{ margin:0px; height:100%; } */
 .container {
 	display: flex;
@@ -62,7 +62,7 @@ body {
 	display: block;
 	/* float: right; */
 	text-align: center;
-	margin-right: 2px; 
+	margin-right: 2px;
 }
 
 .bottom {
@@ -113,7 +113,7 @@ margin-top: 40px;
 	/* margin-top: 40px; */
 	text-align: center;
 	vertical-align: middle;
-	font-size: 15px;		
+	font-size: 15px;
 	text-align: center;
 }
 
@@ -122,7 +122,7 @@ margin-top: 40px;
 	text-align: center;
 	vertical-align: middle;
 	font-size: 20px;
-	font-weight: bold;	
+	font-weight: bold;
 	text-align: center;
 	color: red;
 }
@@ -132,19 +132,20 @@ margin-top: 40px;
 	text-align: center;
 	vertical-align: middle;
 	font-size: 20px;
-	font-weight: bold;	
+	font-weight: bold;
 	text-align: center;
 	color: orange;
 }
 </style>
 </head>
 <body>
-<div class="container-fluid">
-	<div class="container ">
-		<div class="header">
-			<img alt="SAP" src="static/img/SAPlogo.png"	style="width: 128px; margin-bottom: -20px; float: left">
-			<h1>Scrum Planning Application(Docker)</h1>
-			<hr>
+    <div class="container-fluid">
+        <div class="container ">
+        	<div class="header">
+        		<img alt="SAP" src="static/img/SAPlogo.png"
+                	style="width: 128px; margin-bottom: -20px; float: left">
+    		<h1>Scrum Planning Application</h1>
+    		<hr>
 		</div>
 	</div>
 	<div class="container top">
@@ -206,6 +207,10 @@ margin-top: 40px;
 						<button class="btn btn-primary btn-sm" id="newRound" value="">New Round</button>
 						<button class="btn btn-primary btn-sm" id="roundOver" value=""
 							disabled="disabled">Show Result</button>
+							<!--0512-->
+						<button class="btn btn-primary btn-sm" id="terminate" value="">Terminate</button> 
+						<!--0730-->
+						<button class="btn btn-primary btn-sm" id="logout" value="">Log Out</button>
 					</div>
 				</div>
 			</div>
@@ -213,4 +218,21 @@ margin-top: 40px;
 	</div>
 </div>
 </body>
+
+<script>
+	$("#terminate").on('click', function(){
+		if (confirm('Terminate?')) {
+			//post
+			$.ajax({
+					type : "POST",
+					url : "terminate",
+					success : function(data) {
+						console.log("terminate user list success");
+						
+						window.location.replace('/login');
+					}
+				});
+		} 
+	})
+</script> 
 </html>
